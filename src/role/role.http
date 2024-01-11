@@ -1,0 +1,9 @@
+# GET http://localhost:5000/roles/generate-basic-roles HTTP/1.1
+# content-type: application/json
+
+# {}
+
+GET http://localhost:5000/roles HTTP/1.1
+content-type: application/json
+
+{}
