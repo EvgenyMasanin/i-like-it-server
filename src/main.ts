@@ -1,11 +1,12 @@
+import { ValidationPipe } from '@nestjs/common'
 import { NestFactory, Reflector } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 import { AppModule } from './app.module'
-import { AtGuard } from './common/guards/access-token.guard'
+import { AccessTokenGuard } from './common/guards/access-token.guard'
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule)
 
   const config = new DocumentBuilder()
     .setTitle('Test backend')
@@ -20,10 +21,11 @@ async function bootstrap() {
   SwaggerModule.setup('/api/docs', app, document)
 
   const reflector = new Reflector()
-  app.useGlobalGuards(new AtGuard(reflector))
+  app.useGlobalGuards(new AccessTokenGuard(reflector))
+  app.useGlobalPipes(new ValidationPipe())
 
   const PORT = 5000
 
   await app.listen(PORT, () => console.log(`Server started on port = ${PORT}`))
 }
-bootstrap();
+bootstrap()

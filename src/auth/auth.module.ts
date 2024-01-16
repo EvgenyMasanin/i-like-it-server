@@ -1,18 +1,19 @@
-import { AtJwtStrategy, RtJwtStrategy } from 'src/common/strategies'
+import { JwtModule } from '@nestjs/jwt'
+import { Module } from '@nestjs/common'
+import { ConfigModule } from '@nestjs/config'
+
 import { HashModule } from 'src/hash/hash.module'
 import { RoleModule } from 'src/role/role.module'
 import { UserModule } from 'src/user/user.module'
+import { FileModule } from 'src/file/file.module'
+import { AtJwtStrategy, RtJwtStrategy } from 'src/common/strategies'
 
-import { Module } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
-import { JwtModule } from '@nestjs/jwt'
-
-import { AuthController } from './auth.controller'
 import { AuthService } from './auth.service'
+import { AuthController } from './auth.controller'
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, RtJwtStrategy, AtJwtStrategy, ConfigService,ConfigService],
-  imports: [UserModule, HashModule, RoleModule, JwtModule.register({}), ConfigModule],
+  providers: [AuthService, RtJwtStrategy, AtJwtStrategy],
+  imports: [UserModule, HashModule, RoleModule, JwtModule.register({}), ConfigModule, FileModule],
 })
 export class AuthModule {}

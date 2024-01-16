@@ -1,16 +1,18 @@
-import { HashModule } from 'src/hash/hash.module'
-import { HashService } from 'src/hash/hash.service'
-import { Role } from 'src/role/entities/role.entity'
-import { RoleModule } from 'src/role/role.module'
-import { User } from 'src/user/entities/user.entity'
-import { UserModule } from 'src/user/user.module'
-import { UserService } from 'src/user/user.service'
-
-import { INestApplication } from '@nestjs/common'
-import { ConfigModule, ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import { Test, TestingModule } from '@nestjs/testing'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { INestApplication } from '@nestjs/common'
+import { Test, TestingModule } from '@nestjs/testing'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+
+import { HashModule } from 'src/hash/hash.module'
+import { RoleModule } from 'src/role/role.module'
+import { UserModule } from 'src/user/user.module'
+import { FileModule } from 'src/file/file.module'
+import { HashService } from 'src/hash/hash.service'
+import { UserService } from 'src/user/user.service'
+import { FileService } from 'src/file/file.service'
+import { User } from 'src/user/entities/user.entity'
+import { Role } from 'src/role/entities/role.entity'
 
 import { AuthModule } from './auth.module'
 import { AuthService } from './auth.service'
@@ -26,6 +28,7 @@ describe('AuthService', () => {
         UserModule,
         HashModule,
         RoleModule,
+        FileModule,
         TypeOrmModule.forFeature([User]),
         ConfigModule.forRoot({ isGlobal: true }),
         TypeOrmModule.forRootAsync({
@@ -44,7 +47,7 @@ describe('AuthService', () => {
           }),
         }),
       ],
-      providers: [AuthService, UserService, HashService, JwtService, ConfigService],
+      providers: [AuthService, UserService, HashService, JwtService, ConfigService, FileService],
     }).compile()
 
     service = module.get<AuthService>(AuthService)

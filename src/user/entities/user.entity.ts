@@ -1,5 +1,6 @@
-import { Role } from 'src/role/entities/role.entity'
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm'
+
+import { Role } from 'src/role/entities/role.entity'
 
 @Entity()
 export class User {
@@ -7,15 +8,21 @@ export class User {
   id: number
 
   @Column({ unique: true })
+  username: string
+
+  @Column({ unique: true })
   email: string
 
-  @Column()
-  password: string
-
   @Column({ nullable: true })
-  refreshToken: string
+  avatarURL?: string
 
   @ManyToMany(() => Role, { eager: true, onDelete: 'CASCADE' })
   @JoinTable()
   roles: Role[]
+
+  @Column({select: false})
+  password: string
+
+  @Column({ nullable: true, select: false })
+  refreshToken: string
 }

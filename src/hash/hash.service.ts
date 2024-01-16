@@ -1,5 +1,4 @@
 import { compare, hash } from 'bcrypt'
-
 import { Injectable } from '@nestjs/common'
 
 @Injectable()

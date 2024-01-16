@@ -6,7 +6,7 @@ import { CreateRoleDto } from './dto/create-role.dto'
 import { UpdateRoleDto } from './dto/update-role.dto'
 import { RoleService } from './role.service'
 
-@Controller('roles')
+@Controller('role')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
@@ -21,6 +21,8 @@ export class RoleController {
     return this.roleService.findAll()
   }
 
+  //TODO: delete this endpoint
+  @Public()
   @Get('generate-basic-roles')
   generateBasicRoles() {
     return this.roleService.generateBasicRoles()
