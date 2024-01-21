@@ -4,7 +4,6 @@ import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/c
 
 import { HashService } from 'src/hash/hash.service'
 import { UserService } from 'src/user/user.service'
-import { FileService } from 'src/file/file.service'
 import { User } from 'src/user/entities/user.entity'
 
 import { AuthDto } from './dto/auth.dto'

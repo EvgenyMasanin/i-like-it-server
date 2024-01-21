@@ -4,8 +4,9 @@ import { PassportStrategy } from '@nestjs/passport'
 import { Injectable, UnauthorizedException } from '@nestjs/common'
 
 import { UserService } from 'src/user/user.service'
+import { TokensPayload } from 'src/auth/dto/tokens.dto'
 
-import { JwtPayload, JwtStrategies } from '../types'
+import { JwtStrategies } from '../types'
 
 @Injectable()
 export class AtJwtStrategy extends PassportStrategy(Strategy, JwtStrategies.JWT) {
@@ -18,7 +19,7 @@ export class AtJwtStrategy extends PassportStrategy(Strategy, JwtStrategies.JWT)
       secretOrKey: `access-${configService.get('PRIVATE_KEY')}`,
     })
   }
-  async validate(payload: JwtPayload) {
+  async validate(payload: TokensPayload) {
     const { sub: userId } = payload
 
     const refreshToken = await this.userService.getRefreshToken(+userId)

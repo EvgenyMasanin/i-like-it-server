@@ -1,9 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { PickType } from '@nestjs/swagger'
 
-export class CreateRoleDto {
-  @ApiProperty()
-  name: string
-  
-  @ApiProperty()
-  description: string
-}
+import { Role } from '../entities/role.entity'
+
+export class CreateRoleDto extends PickType(Role, ['name', 'description'] as const) {}

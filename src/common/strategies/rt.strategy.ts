@@ -1,11 +1,12 @@
 import { Request } from 'express'
-import { ExtractJwt, Strategy } from 'passport-jwt'
-
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
+import { ExtractJwt, Strategy } from 'passport-jwt'
 import { PassportStrategy } from '@nestjs/passport'
 
-import { JwtPayload, JwtStrategies } from '../types'
+import { TokensPayload } from 'src/auth/dto/tokens.dto'
+
+import { JwtStrategies } from '../types'
 
 @Injectable()
 export class RtJwtStrategy extends PassportStrategy(Strategy, JwtStrategies.JWT_REFRESH) {
@@ -17,7 +18,7 @@ export class RtJwtStrategy extends PassportStrategy(Strategy, JwtStrategies.JWT_
     })
   }
 
-  validate(req: Request, payload: JwtPayload) {
+  validate(req: Request, payload: TokensPayload) {
     const [, refreshToken] = req.headers.authorization.split(' ')
     return {
       ...payload,

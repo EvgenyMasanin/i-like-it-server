@@ -77,7 +77,7 @@ export class UserService {
     }
 
     if (user.avatarURL) {
-      await this.fileService.deleteAvatar(user.avatarURL)
+      await this.fileService.deleteFile(user.avatarURL)
     }
 
     user.avatarURL = avatarURL

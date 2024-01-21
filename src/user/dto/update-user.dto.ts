@@ -2,6 +2,4 @@ import { PartialType } from '@nestjs/swagger'
 
 import { CreateUserDto } from './create-user.dto'
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {
-  rolesId: number[]
-}
+export class UpdateUserDto extends PartialType(CreateUserDto) {}

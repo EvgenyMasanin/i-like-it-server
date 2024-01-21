@@ -1,7 +1,7 @@
-import { applyDecorators } from '@nestjs/common'
 import {
   ApiBody,
   ApiBodyOptions,
+  ApiConsumes,
   ApiHeader,
   ApiHeaderOptions,
   ApiOperation,
@@ -9,15 +9,23 @@ import {
   ApiResponse,
   ApiResponseOptions,
 } from '@nestjs/swagger'
+import { applyDecorators } from '@nestjs/common'
 
-interface IDocumentation {
+export interface IDocumentation {
   operation?: ApiOperationOptions
   body?: ApiBodyOptions
   responses?: ApiResponseOptions[]
   headers?: ApiHeaderOptions[]
+  consumes?: string | string[]
 }
 
-export const Documentation = ({ body, operation, responses, headers }: IDocumentation) => {
+export const Documentation = ({
+  body,
+  operation,
+  responses,
+  headers,
+  consumes,
+}: IDocumentation) => {
   const decorators = []
 
   if (body) {
@@ -31,6 +39,10 @@ export const Documentation = ({ body, operation, responses, headers }: IDocument
   }
   if (headers) {
     decorators.push(...headers.map((header) => ApiHeader(header)))
+  }
+  if (consumes) {
+    if (Array.isArray(consumes)) decorators.push(ApiConsumes(...consumes))
+    else decorators.push(ApiConsumes(consumes))
   }
 
   return applyDecorators(...decorators)

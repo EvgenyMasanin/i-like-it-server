@@ -1,4 +1,4 @@
-import { JwtService } from '@nestjs/jwt'
+import { JwtModule, JwtService } from '@nestjs/jwt'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { INestApplication } from '@nestjs/common'
 import { Test, TestingModule } from '@nestjs/testing'
@@ -13,6 +13,7 @@ import { UserService } from 'src/user/user.service'
 import { FileService } from 'src/file/file.service'
 import { User } from 'src/user/entities/user.entity'
 import { Role } from 'src/role/entities/role.entity'
+import { AtJwtStrategy, RtJwtStrategy } from 'src/common/strategies'
 
 import { AuthModule } from './auth.module'
 import { AuthService } from './auth.service'
@@ -31,6 +32,7 @@ describe('AuthService', () => {
         FileModule,
         TypeOrmModule.forFeature([User]),
         ConfigModule.forRoot({ isGlobal: true }),
+        JwtModule.register({}),
         TypeOrmModule.forRootAsync({
           imports: [ConfigModule],
           inject: [ConfigService],
@@ -47,7 +49,7 @@ describe('AuthService', () => {
           }),
         }),
       ],
-      providers: [AuthService, UserService, HashService, JwtService, ConfigService, FileService],
+      providers: [AuthService, RtJwtStrategy, AtJwtStrategy],
     }).compile()
 
     service = module.get<AuthService>(AuthService)

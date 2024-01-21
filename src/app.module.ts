@@ -10,11 +10,10 @@ import { HashModule } from './hash/hash.module'
 import { RoleModule } from './role/role.module'
 import { UserModule } from './user/user.module'
 import { FileModule } from './file/file.module'
-import { MockService } from './mock/mock.service'
-import { RoleService } from './role/role.service'
-import { UserService } from './user/user.service'
-import { Role } from './role/entities/role.entity'
 import { User } from './user/entities/user.entity'
+import { Role } from './role/entities/role.entity'
+import { CategoriesModule } from './categories/categories.module'
+import { Category } from './categories/entities/category.entity'
 
 @Module({
   imports: [
@@ -29,22 +28,22 @@ import { User } from './user/entities/user.entity'
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
-        // entities: [`${__dirname}/**/*.entity.ts`],
-        entities: [User, Role],
+        entities: [User, Role, Category],
         synchronize: true,
       }),
     }),
     MulterModule.register({ dest: './static' }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'static/avatars'),
+      rootPath: join(__dirname, '..', 'static'),
     }),
     AuthModule,
     UserModule,
     RoleModule,
     HashModule,
     FileModule,
+    CategoriesModule,
   ],
   controllers: [],
-  providers: [MockService],
+  providers: [],
 })
 export class AppModule {}

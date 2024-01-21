@@ -11,4 +11,5 @@ export class Tokens {
 export class TokensPayload {
   sub: number
   email: string
+  roles: string[]
 }

@@ -1,6 +1,5 @@
 import { JwtModule } from '@nestjs/jwt'
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
 
 import { HashModule } from 'src/hash/hash.module'
 import { RoleModule } from 'src/role/role.module'
@@ -14,6 +13,6 @@ import { AuthController } from './auth.controller'
 @Module({
   controllers: [AuthController],
   providers: [AuthService, RtJwtStrategy, AtJwtStrategy],
-  imports: [UserModule, HashModule, RoleModule, JwtModule.register({}), ConfigModule, FileModule],
+  imports: [UserModule, HashModule, RoleModule, JwtModule.register({}), FileModule],
 })
 export class AuthModule {}

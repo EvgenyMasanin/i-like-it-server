@@ -12,8 +12,8 @@ export class FileService {
     return existsSync(path)
   }
 
-  async deleteAvatar(filename: string) {
-    const avatarPath = join(__dirname, '..', '..', 'static', 'avatars', filename)
+  async deleteFile(filename: string) {
+    const avatarPath = join(__dirname, '..', '..', 'static', filename)
 
     if (this.isFileExist(avatarPath)) await unlink(avatarPath)
   }
