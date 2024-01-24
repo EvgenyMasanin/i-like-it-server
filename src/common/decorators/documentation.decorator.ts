@@ -8,8 +8,11 @@ import {
   ApiOperationOptions,
   ApiResponse,
   ApiResponseOptions,
+  ApiTags,
 } from '@nestjs/swagger'
 import { applyDecorators } from '@nestjs/common'
+
+import { ApiTag } from 'src/apiDocumentation/tags'
 
 export interface IDocumentation {
   operation?: ApiOperationOptions
@@ -17,6 +20,7 @@ export interface IDocumentation {
   responses?: ApiResponseOptions[]
   headers?: ApiHeaderOptions[]
   consumes?: string | string[]
+  tags?: ApiTag[]
 }
 
 export const Documentation = ({
@@ -25,6 +29,7 @@ export const Documentation = ({
   responses,
   headers,
   consumes,
+  tags = [ApiTag.auth],
 }: IDocumentation) => {
   const decorators = []
 
@@ -43,6 +48,9 @@ export const Documentation = ({
   if (consumes) {
     if (Array.isArray(consumes)) decorators.push(ApiConsumes(...consumes))
     else decorators.push(ApiConsumes(consumes))
+  }
+  if (tags) {
+    tags.forEach((tag) => decorators.push(ApiTags(tag)))
   }
 
   return applyDecorators(...decorators)

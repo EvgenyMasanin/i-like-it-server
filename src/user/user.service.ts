@@ -1,28 +1,33 @@
 import { DeepPartial, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 
 import { HashService } from 'src/hash/hash.service'
 import { RoleService } from 'src/role/role.service'
 import { FileService } from 'src/file/file.service'
 import { Role } from 'src/role/entities/role.entity'
+import { ExceptionService } from 'src/exception/exception.service'
+import { IThrowException } from 'src/common/interfaces/ITrowException.interface'
 
 import { User } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 
 @Injectable()
-export class UserService {
+export class UserService implements IThrowException {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly roleService: RoleService,
     private readonly hashService: HashService,
-    private readonly fileService: FileService
+    private readonly fileService: FileService,
+    private readonly exceptionService: ExceptionService
   ) {}
 
-  async create({ rolesId, ...dto }: CreateUserDto) {
-    const newUser = this.userRepository.create(dto)
+  async create({ rolesId, email, username, password }: CreateUserDto) {
+    await this.throwExceptionIfUserExist(email, username)
 
-    newUser.password = await this.hashService.hashData(dto.password)
+    const newUser = this.userRepository.create({ email, username })
+
+    newUser.password = await this.hashService.hashData(password)
 
     newUser.roles = await this.roleService.findMany(rolesId)
 
@@ -33,25 +38,29 @@ export class UserService {
     return await this.userRepository.find()
   }
 
-  async findOneByEmail(email: string) {
-    return await this.userRepository.findOneBy({ email })
-  }
-
   async findOne(id: number) {
-    return await this.userRepository.findOneBy({ id })
+    const user = await this.userRepository.findOneBy({ id })
+
+    this.throwExceptionIfNotExist(user)
+
+    return user
   }
 
-  async getPassword(id: number) {
-    return (await this.userRepository.findOne({ where: { id }, select: ['id', 'password'] }))
-      .password
+  async findOneByEmail(email: string) {
+    const user = await this.userRepository.findOneBy({ email })
+
+    return user
   }
 
-  async getRefreshToken(id: number) {
-    return (await this.userRepository.findOne({ where: { id }, select: ['id', 'refreshToken'] }))
-      .refreshToken
+  async findOneByUsername(username: string) {
+    const user = await this.userRepository.findOneBy({ username })
+
+    return user
   }
 
   async update(userId: number, partialUser: DeepPartial<User>) {
+    await this.throwExceptionIfNotExist(userId)
+
     if (Array.isArray(partialUser.roles)) {
       const roles = await this.roleService.findMany(partialUser.roles.map(({ id }: Role) => id))
 
@@ -65,16 +74,21 @@ export class UserService {
     return await this.userRepository.update(userId, partialUser)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`
+  async remove(id: number) {
+    await this.throwExceptionIfNotExist(id)
+
+    return this.userRepository.delete(id)
+  }
+
+  async throwExceptionIfUserExist(email: string, username: string) {
+    if (await this.findOneByEmail(email))
+      throw new UnauthorizedException('This email is already in use!')
+    if (await this.findOneByUsername(username))
+      throw new UnauthorizedException('This username is already in use!')
   }
 
   async setAvatar(id: number, avatarURL: string) {
     const user = await this.findOne(id)
-
-    if (!user) {
-      throw new BadRequestException('There is no user with provided id!')
-    }
 
     if (user.avatarURL) {
       await this.fileService.deleteFile(user.avatarURL)
@@ -83,5 +97,32 @@ export class UserService {
     user.avatarURL = avatarURL
 
     this.userRepository.save(user)
+  }
+
+  async getPassword(id: number) {
+    const user = await this.userRepository.findOne({ where: { id }, select: ['id', 'password'] })
+
+    this.throwExceptionIfNotExist(user)
+
+    return user.password
+  }
+
+  async getRefreshToken(id: number) {
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: ['id', 'refreshToken'],
+    })
+
+    this.throwExceptionIfNotExist(user)
+
+    return user.refreshToken
+  }
+
+  throwExceptionIfNotExist(userOrId: User | number) {
+    if (typeof userOrId === 'number') {
+      return (async () => await this.findOne(userOrId))()
+    } else {
+      this.exceptionService.throwIfNotExist(userOrId, 'user')
+    }
   }
 }

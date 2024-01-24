@@ -1,0 +1,16 @@
+{
+  "material-icon-theme.activeIconPack": "nest",
+  "window.zoomLevel": 1,
+  "workbench.colorTheme": "Material Theme High Contrast",
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "I_LIKE_IT_DB",
+      "database": "I_LIKE_IT_DB",
+      "username": "postgres"
+    }
+  ]
+}

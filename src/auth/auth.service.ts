@@ -20,8 +20,6 @@ export class AuthService {
   ) {}
 
   async signup({ username, email, password }: AuthDto): Promise<AuthUserDto> {
-    if (await this.userService.findOneByEmail(email))
-      throw new UnauthorizedException('This email is already used!')
     //TODO: role selection
     const newUser = await this.userService.create({ username, email, password, rolesId: [1, 3] })
 
@@ -40,11 +38,11 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(email)
     const passwordHash = await this.userService.getPassword(user.id)
 
-    if (!user) throw new ForbiddenException('Access denied')
+    if (!user) throw new UnauthorizedException('Incorrect email or password')
 
     const passwordMatches = await this.hashService.compareData(password, passwordHash)
 
-    if (!passwordMatches) throw new ForbiddenException('Access denied')
+    if (!passwordMatches) throw new UnauthorizedException('Incorrect email or password')
 
     const tokens = await this.getTokens(
       user.id,
@@ -82,7 +80,7 @@ export class AuthService {
   async refreshTokens(userId: number, rt: string) {
     const user = await this.userService.findOne(userId)
     const refreshToken = await this.userService.getRefreshToken(userId)
-    
+
     if (!user || !user.refreshToken) throw new ForbiddenException('Access denied')
 
     const rtMatches = this.hashService.compareData(rt, refreshToken)
@@ -109,11 +107,11 @@ export class AuthService {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(tokensPayload, {
         secret: `access-${privateKey}`,
-        expiresIn: '7d',//TODO: fix it
+        expiresIn: '7d', //TODO: fix it
       }),
       this.jwtService.signAsync(tokensPayload, {
         secret: `refresh-${privateKey}`,
-        expiresIn: '7d',
+        expiresIn: '30d',
       }),
     ])
 

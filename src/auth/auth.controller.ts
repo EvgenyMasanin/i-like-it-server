@@ -1,16 +1,22 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common'
 
 import { GetCurrentUserId, Public } from 'src/common/decorators'
 import { RefreshTokenGuard } from 'src/common/guards/refresh-token.guard'
 import { Documentation } from 'src/common/decorators/documentation.decorator'
-import { GetRefreshToken } from 'src/common/decorators/get-refresh-token.decorator'
+import { GetRefreshToken } from 'src/common/decorators/auth/get-refresh-token.decorator'
 
+import {
+  LOGOUT_DOCUMENTATION,
+  ME_DOCUMENTATION,
+  REFRESH_DOCUMENTATION,
+  SIGNIN_DOCUMENTATION,
+  SIGNUP_DOCUMENTATION,
+} from './documentation'
 import { AuthDto } from './dto/auth.dto'
 import { Tokens } from './dto/tokens.dto'
 import { AuthService } from './auth.service'
 import { AuthUserDto } from './dto/auth-user.dto'
-import { logoutDoc, meDoc, refreshDoc, signinDoc, signupDoc } from './documentation'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -20,7 +26,7 @@ export class AuthController {
   @Post('signup')
   @Public()
   @HttpCode(HttpStatus.CREATED)
-  @Documentation(signupDoc)
+  @Documentation(SIGNUP_DOCUMENTATION)
   signup(@Body() dto: AuthDto): Promise<AuthUserDto> {
     return this.authService.signup(dto)
   }
@@ -28,23 +34,23 @@ export class AuthController {
   @Post('signin')
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Documentation(signinDoc)
+  @Documentation(SIGNIN_DOCUMENTATION)
   async signin(@Body() dto: AuthDto): Promise<AuthUserDto> {
     return await this.authService.signin(dto)
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.RESET_CONTENT)
-  @Documentation(logoutDoc)
+  @Documentation(LOGOUT_DOCUMENTATION)
   async logout(@GetCurrentUserId() userId: number) {
     return await this.authService.logout(userId)
   }
 
   @Get('refresh')
-  @HttpCode(HttpStatus.OK)
   @Public()
+  @HttpCode(HttpStatus.OK)
   @UseGuards(RefreshTokenGuard)
-  @Documentation(refreshDoc)
+  @Documentation(REFRESH_DOCUMENTATION)
   async refreshTokens(
     @GetCurrentUserId() userId: number,
     @GetRefreshToken() refreshToken: string
@@ -54,7 +60,7 @@ export class AuthController {
 
   @Get('me')
   @HttpCode(HttpStatus.OK)
-  @Documentation(meDoc)
+  @Documentation(ME_DOCUMENTATION)
   async getMe(@GetCurrentUserId() userId: number): Promise<AuthUserDto> {
     return await this.authService.getMe(userId)
   }

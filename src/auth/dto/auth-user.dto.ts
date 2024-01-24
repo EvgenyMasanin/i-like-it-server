@@ -16,12 +16,12 @@ export class AuthUserDto
   @ApiProperty()
   refreshToken: string
 
-  @ApiProperty()
+  @ApiProperty({ example: 42 })
   id: number
 
-  @ApiProperty()
+  @ApiProperty({ example: 'avatars/3ae56ab5926a103d49072e76cd288ae28.jpg' })
   avatarURL: string
 
-  @ApiProperty({ type: Role, isArray: true })
+  @ApiProperty({ type: [Role] })
   roles: Role[]
 }

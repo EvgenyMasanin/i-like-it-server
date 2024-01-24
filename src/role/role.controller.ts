@@ -1,12 +1,14 @@
-import { Public } from 'src/common/decorators'
-
+import { ApiTags } from '@nestjs/swagger'
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common'
 
+import { Public } from 'src/common/decorators'
+
+import { RoleService } from './role.service'
 import { CreateRoleDto } from './dto/create-role.dto'
 import { UpdateRoleDto } from './dto/update-role.dto'
-import { RoleService } from './role.service'
 
-@Controller('role')
+@Controller('roles')
+@ApiTags('Roles')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 

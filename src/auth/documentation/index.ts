@@ -1,48 +1,45 @@
 import { HttpStatus } from '@nestjs/common'
-import { AuthUserDto } from '../dto/auth-user.dto'
+
+import { UNAUTHORIZED_RESPONSE } from 'src/apiDocumentation'
+
 import { AuthDto } from '../dto/auth.dto'
 import { Tokens } from '../dto/tokens.dto'
+import { AuthUserDto } from '../dto/auth-user.dto'
 
-export const signupDoc = {
+export const SIGNUP_DOCUMENTATION = {
   operation: { summary: 'Creating new user.' },
   body: {
     type: AuthDto,
   },
-  responses: [
-    { status: HttpStatus.CREATED, type: AuthUserDto },
-    { status: HttpStatus.UNAUTHORIZED, description: 'Unauthorized' },
-  ],
+  responses: [{ status: HttpStatus.CREATED, type: AuthUserDto }, UNAUTHORIZED_RESPONSE],
 }
 
-export const signinDoc = {
+export const SIGNIN_DOCUMENTATION = {
   operation: { summary: 'Getting user by credentials.' },
   body: {
     type: AuthDto,
   },
-  responses: [
-    { status: HttpStatus.OK, type: AuthUserDto },
-    { status: HttpStatus.FORBIDDEN, description: 'Forbidden.' },
-  ],
+  responses: [{ status: HttpStatus.OK, type: AuthUserDto }, UNAUTHORIZED_RESPONSE],
 }
 
-export const logoutDoc = {
+export const LOGOUT_DOCUMENTATION = {
   operation: { summary: 'Logout.' },
   responses: [{ status: HttpStatus.RESET_CONTENT, description: 'Logout.' }],
 }
 
-export const refreshDoc = {
+export const REFRESH_DOCUMENTATION = {
   operation: { summary: 'Getting new access token.' },
   responses: [
     { status: HttpStatus.OK, type: Tokens },
     {
-      status: HttpStatus.FORBIDDEN,
+      status: HttpStatus.UNAUTHORIZED,
       description: 'Access denied because of invalid refresh token.',
     },
   ],
   headers: [{ name: 'authorization', description: 'Bearer refresh token.' }],
 }
 
-export const meDoc = {
+export const ME_DOCUMENTATION = {
   operation: { summary: 'Getting current user data by access token.' },
   responses: [
     { status: HttpStatus.OK, type: AuthUserDto },

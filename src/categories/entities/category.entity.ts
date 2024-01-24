@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 
 import { IsString } from 'class-validator'
 import { User } from 'src/user/entities/user.entity'
+import { Member } from 'src/member/entities/member.entity'
 
 @Entity()
 export class Category {
@@ -27,4 +28,7 @@ export class Category {
   @ApiProperty({ type: () => User })
   @ManyToOne(() => User, (user) => user.categories, { nullable: true, eager: true })
   author: User
+
+  @OneToMany(() => Member, (member) => member.category)
+  members: Member[]
 }

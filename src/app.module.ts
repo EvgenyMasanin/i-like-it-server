@@ -10,10 +10,16 @@ import { HashModule } from './hash/hash.module'
 import { RoleModule } from './role/role.module'
 import { UserModule } from './user/user.module'
 import { FileModule } from './file/file.module'
+import { MemberModule } from './member/member.module'
 import { User } from './user/entities/user.entity'
 import { Role } from './role/entities/role.entity'
+import { Member } from './member/entities/member.entity'
+import { ExceptionModule } from './exception/exception.module'
 import { CategoriesModule } from './categories/categories.module'
 import { Category } from './categories/entities/category.entity'
+import { MemberGallery } from './member/entities/member-gallery.entity'
+import { CharacteristicModule } from './characteristic/characteristic.module'
+import { Characteristic } from './characteristic/entities/characteristic.entity'
 
 @Module({
   imports: [
@@ -28,7 +34,7 @@ import { Category } from './categories/entities/category.entity'
         username: configService.get('POSTGRES_USER'),
         password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DB'),
-        entities: [User, Role, Category],
+        entities: [User, Role, Category, Member, MemberGallery, Characteristic],
         synchronize: true,
       }),
     }),
@@ -42,6 +48,9 @@ import { Category } from './categories/entities/category.entity'
     HashModule,
     FileModule,
     CategoriesModule,
+    MemberModule,
+    CharacteristicModule,
+    ExceptionModule,
   ],
   controllers: [],
   providers: [],

@@ -1,19 +1,26 @@
-import { BasicRole } from 'src/common/decorators/role.decorator'
 import { In, Repository } from 'typeorm'
-
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 
+import { ExceptionService } from 'src/exception/exception.service'
+import { BasicRole } from 'src/common/decorators/auth/role.decorator'
+import { IThrowException } from 'src/common/interfaces/ITrowException.interface'
+
+import { Role } from './entities/role.entity'
 import { CreateRoleDto } from './dto/create-role.dto'
 import { UpdateRoleDto } from './dto/update-role.dto'
-import { Role } from './entities/role.entity'
 
 @Injectable()
-export class RoleService {
-  constructor(@InjectRepository(Role) private readonly roleRepository: Repository<Role>) {}
+export class RoleService implements IThrowException {
+  constructor(
+    @InjectRepository(Role) private readonly roleRepository: Repository<Role>,
+    private readonly exceptionService: ExceptionService
+  ) {}
 
-  async create(createRoleDto: CreateRoleDto) {
-    return await this.roleRepository.save(createRoleDto)
+  async create({ description, name }: CreateRoleDto) {
+    this.findOneByName(name)
+
+    return await this.roleRepository.save({ description, name })
   }
 
   async findMany(rolesIds: number[]) {
@@ -25,21 +32,33 @@ export class RoleService {
   }
 
   async findOne(id: number) {
-    return await this.roleRepository.findOneBy({ id })
+    const role = await this.roleRepository.findOneBy({ id })
+
+    this.throwExceptionIfNotExist(role)
+
+    return role
   }
 
   async findOneByName(name: string) {
-    return await this.roleRepository.findOneBy({ name })
+    const role = await this.roleRepository.findOneBy({ name })
+
+    this.throwExceptionIfNotExist(role)
+
+    return role
   }
 
   async update(id: number, updateRoleDto: UpdateRoleDto) {
+    await this.throwExceptionIfNotExist(id)
+
     return await this.roleRepository.update(id, updateRoleDto)
   }
 
   async remove(id: number) {
+    await this.throwExceptionIfNotExist(id)
+
     return await this.roleRepository.delete(id)
   }
-
+  //FIXME: for dev only
   async generateBasicRoles() {
     if (await this.roleRepository.findOneBy({ name: BasicRole.admin })) {
       return 'Basic roles already generated'
@@ -54,5 +73,13 @@ export class RoleService {
     await this.roleRepository.save(user)
 
     return 'Basic roles generated'
+  }
+
+  throwExceptionIfNotExist(roleOrId: Role | number) {
+    if (typeof roleOrId === 'number') {
+      return (async () => await this.findOne(roleOrId))()
+    } else {
+      this.exceptionService.throwIfNotExist(roleOrId, 'role')
+    }
   }
 }

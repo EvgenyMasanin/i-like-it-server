@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   HttpStatus,
   Param,
   Patch,
@@ -10,33 +11,32 @@ import {
   Query,
   UploadedFile,
 } from '@nestjs/common'
-import { ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiTags } from '@nestjs/swagger'
 
 import { Documentation, FileSaver, GetCurrentUserId, Public } from 'src/common/decorators'
-import { NonExistentUser } from 'src/common/errors/user/non-existent-user'
 
+import {
+  CREATE_DOCUMENTATION,
+  FIND_ALL_BY_AUTHOR_DOCUMENTATION,
+  FIND_ALL_DOCUMENTATION,
+  FIND_ONE_DOCUMENTATION,
+  REMOVE_DOCUMENTATION,
+  UPDATE_DOCUMENTATION,
+} from './apiDocumentation'
 import { FilterDto } from './dto/filter.dto'
 import { CategoriesService } from './categories.service'
-import { Category } from './entities/category.entity'
 import { CreateCategoryDto } from './dto/create-category.dto'
 import { UpdateCategoryDto } from './dto/update-category.dto'
-import {
-  createDoc,
-  findAllByAuthorDoc,
-  findAllDoc,
-  findOneDoc,
-  removeDoc,
-  updateDoc,
-} from './documentation'
 
 @ApiTags('categories')
-@Controller('categories')
+@Controller('Categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @FileSaver('categoryImage', 'category-images')
-  @Documentation(createDoc)
+  @Documentation(CREATE_DOCUMENTATION)
   create(
     @GetCurrentUserId() userId: number,
     @Body()
@@ -49,32 +49,40 @@ export class CategoriesController {
   }
 
   @Get('filter')
-  @Documentation(findAllByAuthorDoc)
+  @Public()
+  @Documentation(FIND_ALL_BY_AUTHOR_DOCUMENTATION)
   findAllByAuthor(@Query() { userId }: FilterDto) {
     return this.categoriesService.findAllByAuthor(+userId)
   }
 
   @Get()
-  @Documentation(findAllDoc)
+  @Public()
+  @Documentation(FIND_ALL_DOCUMENTATION)
   findAll() {
     return this.categoriesService.findAll()
   }
 
   @Get(':id')
-  @Documentation(findOneDoc)
+  @Public()
+  @Documentation(FIND_ONE_DOCUMENTATION)
   findOne(@Param('id') id: string) {
     return this.categoriesService.findOne(+id)
   }
 
   @Patch(':id')
-  @Documentation(updateDoc)
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoriesService.update(+id, updateCategoryDto)
+  @Documentation(UPDATE_DOCUMENTATION)
+  update(
+    @Param('id') id: string,
+    @GetCurrentUserId() userId: number,
+    @Body() updateCategoryDto: UpdateCategoryDto
+  ) {
+    return this.categoriesService.update(+id, userId, updateCategoryDto)
   }
 
   @Delete(':id')
-  @Documentation(removeDoc)
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Documentation(REMOVE_DOCUMENTATION)
+  remove(@Param('id') id: string, @GetCurrentUserId() userId: number) {
+    return this.categoriesService.remove(+id, userId)
   }
 }

@@ -1,12 +1,19 @@
 import { extname, join } from 'path'
 import { diskStorage } from 'multer'
 import { applyDecorators, UseInterceptors } from '@nestjs/common'
-import { FileInterceptor } from '@nestjs/platform-express'
+import { AnyFilesInterceptor, FileInterceptor } from '@nestjs/platform-express'
 
-export const FileSaver = (fieldName: string, folderName: string) => {
+type FileSaverResult = ReturnType<typeof applyDecorators>
+
+export function FileSaver(folderName: string): FileSaverResult
+export function FileSaver(folderName: string, fieldName: string): FileSaverResult
+
+export function FileSaver(folderName: string, fieldName?: string): FileSaverResult {
+  const Interceptor = fieldName ? FileInterceptor.bind(null, fieldName) : AnyFilesInterceptor
+
   return applyDecorators(
     UseInterceptors(
-      FileInterceptor(fieldName, {
+      Interceptor({
         storage: diskStorage({
           destination: './static',
           filename: (req, file, cb) => {

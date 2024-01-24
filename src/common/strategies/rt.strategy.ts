@@ -6,7 +6,7 @@ import { PassportStrategy } from '@nestjs/passport'
 
 import { TokensPayload } from 'src/auth/dto/tokens.dto'
 
-import { JwtStrategies } from '../types'
+import { JwtStrategies } from '../interfaces'
 
 @Injectable()
 export class RtJwtStrategy extends PassportStrategy(Strategy, JwtStrategies.JWT_REFRESH) {
