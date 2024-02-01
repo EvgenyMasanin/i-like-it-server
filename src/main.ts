@@ -1,9 +1,9 @@
 import { NestFactory, Reflector } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common'
 
 import { AppModule } from './app.module'
-import { ValidationPipe } from './common/pipes/validation.pipe'
-import { AccessTokenGuard } from './common/guards/access-token.guard'
+import { AccessTokenGuard } from './auth/guards/access-token.guard'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -21,8 +21,10 @@ async function bootstrap() {
   SwaggerModule.setup('/api/docs', app, document)
 
   const reflector = new Reflector()
-  app.useGlobalGuards(new AccessTokenGuard(reflector))
+
   app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalGuards(new AccessTokenGuard(reflector))
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(reflector))
 
   const PORT = 5000
 

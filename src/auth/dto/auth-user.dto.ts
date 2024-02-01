@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-import { Role } from 'src/role/entities/role.entity'
-import { User } from 'src/user/entities/user.entity'
-import { PlainUserDto } from 'src/user/dto/plain-user.dto'
+import { Role } from 'src/core/role/entities/role.entity'
+import { User } from 'src/core/user/entities/user.entity'
+import { PlainUserDto } from 'src/core/user/dto/plain-user.dto'
 
 import { Tokens } from './tokens.dto'
 

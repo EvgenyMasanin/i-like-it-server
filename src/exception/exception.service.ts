@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { NonExistentEntityException } from 'src/common/exceptions/non-existent.exception'
+import { NonExistentEntityException } from './exceptions/non-existent.exception'
 
 @Injectable()
 export class ExceptionService {

@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config'
 import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common'
 
 import { HashService } from 'src/hash/hash.service'
-import { UserService } from 'src/user/user.service'
-import { User } from 'src/user/entities/user.entity'
+import { UserService } from 'src/core/user/user.service'
+import { User } from 'src/core/user/entities/user.entity'
 
 import { AuthDto } from './dto/auth.dto'
 import { Tokens } from './dto/tokens.dto'
@@ -56,9 +56,7 @@ export class AuthService {
   }
 
   async logout(userId: number) {
-    await this.userService.update(userId, {
-      refreshToken: null,
-    })
+    await this.userService.updateRefreshToken(userId, null)
   }
 
   async getMe(userId: number) {
@@ -136,6 +134,6 @@ export class AuthService {
 
   async updateRefreshTokenHash(userId: number, rt: string) {
     const hash = await this.hashService.hashData(rt)
-    await this.userService.update(userId, { refreshToken: hash })
+    await this.userService.updateRefreshToken(userId, hash)
   }
 }

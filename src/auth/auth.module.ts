@@ -2,10 +2,10 @@ import { JwtModule } from '@nestjs/jwt'
 import { Module } from '@nestjs/common'
 
 import { HashModule } from 'src/hash/hash.module'
-import { RoleModule } from 'src/role/role.module'
-import { UserModule } from 'src/user/user.module'
 import { FileModule } from 'src/file/file.module'
-import { AtJwtStrategy, RtJwtStrategy } from 'src/common/strategies'
+import { RoleModule } from 'src/core/role/role.module'
+import { UserModule } from 'src/core/user/user.module'
+import { AtJwtStrategy, RtJwtStrategy } from 'src/auth/strategies'
 
 import { AuthService } from './auth.service'
 import { AuthController } from './auth.controller'

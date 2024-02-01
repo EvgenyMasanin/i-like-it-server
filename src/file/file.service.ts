@@ -17,8 +17,4 @@ export class FileService {
 
     if (this.isFileExist(avatarPath)) await unlink(avatarPath)
   }
-
-  getAvatarUrl(filename: string) {
-    return `${this.configService.get('SERVER_DEV_URL')}/${filename}}`
-  }
 }

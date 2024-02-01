@@ -1,10 +1,7 @@
 import { ApiTags } from '@nestjs/swagger'
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common'
 
-import { GetCurrentUserId, Public } from 'src/common/decorators'
-import { RefreshTokenGuard } from 'src/common/guards/refresh-token.guard'
-import { Documentation } from 'src/common/decorators/documentation.decorator'
-import { GetRefreshToken } from 'src/common/decorators/auth/get-refresh-token.decorator'
+import { Documentation } from 'src/api-documentation/decorators'
 
 import {
   LOGOUT_DOCUMENTATION,
@@ -12,11 +9,13 @@ import {
   REFRESH_DOCUMENTATION,
   SIGNIN_DOCUMENTATION,
   SIGNUP_DOCUMENTATION,
-} from './documentation'
+} from './api-documentation'
 import { AuthDto } from './dto/auth.dto'
 import { Tokens } from './dto/tokens.dto'
 import { AuthService } from './auth.service'
 import { AuthUserDto } from './dto/auth-user.dto'
+import { GetCurrentUserId, GetRefreshToken, Public } from './decorators'
+import { RefreshTokenGuard } from './guards/refresh-token.guard'
 
 @ApiTags('Auth')
 @Controller('auth')
