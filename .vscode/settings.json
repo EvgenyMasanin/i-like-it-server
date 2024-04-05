@@ -1,6 +1,6 @@
 {
   "window.zoomLevel": 1,
-  "workbench.colorTheme": "Material Theme High Contrast",
+  "workbench.colorTheme": "Material Theme Palenight High Contrast",
   "sqltools.connections": [
     {
       "previewLimit": 50,

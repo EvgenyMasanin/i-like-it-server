@@ -84,6 +84,7 @@ export class CategoriesService implements CategoriesCRUDService {
 
     const [data, total] = await this.categoryRepository.findAndCount({
       where: findParameters,
+      order: { id: 'ASC' },
       take: limit,
       skip: offset,
     })

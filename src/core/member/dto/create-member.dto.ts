@@ -13,6 +13,6 @@ export class CreateMemberDto extends PickType(Member, ['name', 'description'] as
   @IsPositive()
   categoryId: number
 
-  @ApiProperty({ type: JSON.stringify([CreateCharacteristicDto]) })
+  @ApiProperty({ type: [CreateCharacteristicDto] })
   characteristics: CreateCharacteristicDto[]
 }

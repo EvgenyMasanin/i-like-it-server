@@ -49,6 +49,18 @@ export const UPLOAD_GALLERY_DOCUMENTATION: IDocumentation = {
   ],
 }
 
+export const LIKE_DOCUMENTATION: IDocumentation = {
+  operation: { summary: 'Set or unset like.' },
+  responses: [
+    {
+      status: HttpStatus.OK,
+      type: MemberDto,
+    },
+    UNAUTHORIZED_RESPONSE,
+    NOT_EXISTING_MEMBER_RESPONSE,
+  ],
+}
+
 export const FIND_ALL_DOCUMENTATION: IDocumentation = FIND_ALL_COMMON_DOCUMENTATION(
   WithPagination(MemberDto),
   'member'
@@ -68,6 +80,7 @@ export const FIND_ONE_DOCUMENTATION: IDocumentation = FIND_ONE_COMMON_DOCUMENTAT
 
 export const UPDATE_DOCUMENTATION: IDocumentation = UPDATE_COMMON_DOCUMENTATION(
   'member',
+  MemberDto,
   NOT_EXISTING_MEMBER_RESPONSE
 )
 

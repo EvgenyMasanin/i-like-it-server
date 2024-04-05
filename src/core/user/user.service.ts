@@ -52,6 +52,7 @@ export class UserService implements CategoriesCRUDService {
 
     const [data, total] = await this.userRepository.findAndCount({
       where: findParameters,
+      order: { id: 'ASC' },
       take: limit,
       skip: offset,
     })
@@ -130,7 +131,7 @@ export class UserService implements CategoriesCRUDService {
 
     user.avatarURL = avatarURL
 
-    this.userRepository.save(user)
+    await this.userRepository.save(user)
   }
 
   async getPassword(id: number) {

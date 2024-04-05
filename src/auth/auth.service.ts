@@ -1,18 +1,24 @@
 import { JwtService } from '@nestjs/jwt'
 import { ConfigService } from '@nestjs/config'
-import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common'
+import { ClientProxy } from '@nestjs/microservices'
+import { ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common'
 
+import { MicroService } from 'src/rmq'
 import { HashService } from 'src/hash/hash.service'
+import { MailService } from 'src/mail/mail.service'
 import { UserService } from 'src/core/user/user.service'
 import { User } from 'src/core/user/entities/user.entity'
+import { ConfirmationEmailDto } from 'src/mail/dto/confirmation-email.dto'
 
 import { AuthDto } from './dto/auth.dto'
 import { Tokens } from './dto/tokens.dto'
+import { SigninDto } from './dto/signin.dto'
 import { AuthUserDto } from './dto/auth-user.dto'
 
 @Injectable()
 export class AuthService {
   constructor(
+    private readonly mailService: MailService,
     private readonly userService: UserService,
     private readonly hashService: HashService,
     private readonly jwtService: JwtService,
@@ -31,14 +37,17 @@ export class AuthService {
 
     await this.updateRefreshTokenHash(newUser.id, tokens.refreshToken)
 
+    this.sentConfirmationEmail(email, username)
+
     return this.getAuthUserDto(newUser, tokens)
   }
 
-  async signin({ email, password }: AuthDto): Promise<AuthUserDto> {
+  async signin({ email, password }: SigninDto): Promise<AuthUserDto> {
     const user = await this.userService.findOneByEmail(email)
-    const passwordHash = await this.userService.getPassword(user.id)
 
     if (!user) throw new UnauthorizedException('Incorrect email or password')
+
+    const passwordHash = await this.userService.getPassword(user.id)
 
     const passwordMatches = await this.hashService.compareData(password, passwordHash)
 
@@ -51,6 +60,8 @@ export class AuthService {
     )
 
     await this.updateRefreshTokenHash(user.id, tokens.refreshToken)
+
+    this.mailService.testChannel()
 
     return this.getAuthUserDto(user, tokens)
   }
@@ -66,6 +77,7 @@ export class AuthService {
 
     const tokens = await this.getTokens(
       user.id,
+
       user.email,
       user.roles.map((r) => r.name)
     )
@@ -79,9 +91,9 @@ export class AuthService {
     const user = await this.userService.findOne(userId)
     const refreshToken = await this.userService.getRefreshToken(userId)
 
-    if (!user || !user.refreshToken) throw new ForbiddenException('Access denied')
+    if (!user || !refreshToken) throw new ForbiddenException('Access denied')
 
-    const rtMatches = this.hashService.compareData(rt, refreshToken)
+    const rtMatches = await this.hashService.compareData(rt, refreshToken)
     if (!rtMatches) throw new ForbiddenException('Access denied')
 
     const tokens = await this.getTokens(
@@ -105,7 +117,7 @@ export class AuthService {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(tokensPayload, {
         secret: `access-${privateKey}`,
-        expiresIn: '7d', //TODO: fix it
+        expiresIn: '30m',
       }),
       this.jwtService.signAsync(tokensPayload, {
         secret: `refresh-${privateKey}`,
@@ -135,5 +147,17 @@ export class AuthService {
   async updateRefreshTokenHash(userId: number, rt: string) {
     const hash = await this.hashService.hashData(rt)
     await this.userService.updateRefreshToken(userId, hash)
+  }
+
+  async sentConfirmationEmail(email: string, username: string) {
+    const timestamp = Date.now()
+
+    const tokenData = `${email}.${timestamp}`
+
+    const confirmationToken = await this.hashService.hashData(tokenData)
+
+    const confirmationUrl = `${this.configService.get('CONFIRMATION_URL')}/${confirmationToken}`
+
+    this.mailService.sentConfirmationEmail({ email, username, confirmationUrl })
   }
 }

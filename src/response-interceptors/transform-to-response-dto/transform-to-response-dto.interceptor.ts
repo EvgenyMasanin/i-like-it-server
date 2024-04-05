@@ -25,20 +25,21 @@ export class TransformToResponseDtoInterceptor<ToTransform, Transformed>
       EXCLUDE_TRANSFORM_TO_RESPONSE_DTO,
       [context.getHandler(), context.getClass()]
     )
-
     if (excludeTransformToResponseDto) return next.handle().pipe()
 
     return next.handle().pipe(
       map((response) => {
-        const mapResponse = (response: OneOrMore<ToTransform>) =>
-          Array.isArray(response)
-            ? response.map((entity) => this.mapper(entity))
-            : this.mapper(response)
-
         return isPagination(response)
-          ? { data: mapResponse(response.data), pagination: response.pagination }
-          : mapResponse(response)
+          ? { ...response, data: mapResponse(response.data, this.mapper) }
+          : mapResponse(response, this.mapper)
       })
     )
   }
+}
+
+function mapResponse<ToTransform, Transformed>(
+  response: OneOrMore<ToTransform>,
+  mapper: MapperFunction<ToTransform, Transformed>
+) {
+  return Array.isArray(response) ? response.map((entity) => mapper(entity)) : mapper(response)
 }

@@ -19,6 +19,7 @@ import { CategoriesModule } from './core/categories/categories.module'
 import { Category } from './core/categories/entities/category.entity'
 import { CharacteristicModule } from './core/characteristic/characteristic.module'
 import { Characteristic } from './core/characteristic/entities/characteristic.entity'
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { Characteristic } from './core/characteristic/entities/characteristic.en
         synchronize: true,
       }),
     }),
+
     MulterModule.register({ dest: './static' }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'static'),
@@ -50,6 +52,7 @@ import { Characteristic } from './core/characteristic/entities/characteristic.en
     MemberModule,
     CharacteristicModule,
     ExceptionModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],

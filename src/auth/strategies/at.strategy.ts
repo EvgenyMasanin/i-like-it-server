@@ -27,6 +27,7 @@ export class AtJwtStrategy extends PassportStrategy(Strategy, JwtStrategies.JWT)
     if (!refreshToken) {
       throw new UnauthorizedException()
     }
+
     return payload
   }
 }

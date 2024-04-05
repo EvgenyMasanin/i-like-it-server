@@ -20,5 +20,5 @@ export interface CRUDController<Entity, CreateEntityDto, UpdateEntityDto, QueryD
 
   findAllByFilter(filterDto: QueryDto): Promise<WithPagination<Entity>>
 
-  findOne(id: string): Promise<Entity>
+  findOne(id: string | number): Promise<Entity>
 }

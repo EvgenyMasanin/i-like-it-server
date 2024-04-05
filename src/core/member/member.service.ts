@@ -31,7 +31,6 @@ export class MemberService implements MemberCRUDService {
     private readonly userService: UserService,
     private readonly exceptionService: ExceptionService
   ) {}
-
   async create(createMemberDto: CreateMemberDto) {
     const {
       authorId,
@@ -49,9 +48,12 @@ export class MemberService implements MemberCRUDService {
       author: { id: authorId, avatarURL, username },
       name,
       description,
+      usersLikesIds: [],
     })
+    console.log('🚀 ~ create ~ newMember:', newMember)
 
     const member = await this.memberRepository.save(newMember)
+    console.log('🚀 ~ create ~ member:', member)
 
     const characteristics = await this.characteristicService.createMany(member, characteristicsDto)
 
@@ -123,6 +125,7 @@ export class MemberService implements MemberCRUDService {
 
     const [data, total] = await this.memberRepository.findAndCount({
       where: findParameters,
+      order: { id: 'ASC' },
       take: limit,
       skip: offset,
     })
@@ -150,12 +153,11 @@ export class MemberService implements MemberCRUDService {
     const user = await this.userService.findOne(userId)
     const member = await this.findOne(memberId)
 
-    const isAlreadyLiked = member.usersLikesIds.find(({ id }) => id === userId)
+    const isAlreadyLiked = member.usersLikesIds.some(({ id }) => id === userId)
 
     if (isAlreadyLiked) {
       return this.unlike(member, userId)
     }
-
     member.usersLikesIds = member.usersLikesIds.concat(user)
     await this.memberRepository.save(member)
 

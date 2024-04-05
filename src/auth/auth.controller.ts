@@ -13,6 +13,7 @@ import {
 import { AuthDto } from './dto/auth.dto'
 import { Tokens } from './dto/tokens.dto'
 import { AuthService } from './auth.service'
+import { SigninDto } from './dto/signin.dto'
 import { AuthUserDto } from './dto/auth-user.dto'
 import { GetCurrentUserId, GetRefreshToken, Public } from './decorators'
 import { RefreshTokenGuard } from './guards/refresh-token.guard'
@@ -34,7 +35,7 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Documentation(SIGNIN_DOCUMENTATION)
-  async signin(@Body() dto: AuthDto): Promise<AuthUserDto> {
+  async signin(@Body() dto: SigninDto): Promise<AuthUserDto> {
     return await this.authService.signin(dto)
   }
 

@@ -26,6 +26,7 @@ import {
   FIND_ALL_BY_FILTER_DOCUMENTATION,
   FIND_ALL_DOCUMENTATION,
   FIND_ONE_DOCUMENTATION,
+  LIKE_DOCUMENTATION,
   REMOVE_DOCUMENTATION,
   UPDATE_DOCUMENTATION,
   UPLOAD_GALLERY_DOCUMENTATION,
@@ -73,7 +74,9 @@ export class MemberController implements MemberCRUDController {
   }
 
   @Patch('like/:id')
-  like(@GetCurrentUserId() userId: number, @Param() { id: memberId }: { id: string }) {
+  @Documentation(LIKE_DOCUMENTATION)
+  like(@GetCurrentUserId() userId: number, @Param('id') memberId: string) {
+    console.log()
     return this.memberService.like(userId, +memberId)
   }
 

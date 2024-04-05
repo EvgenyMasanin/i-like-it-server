@@ -1,25 +1,30 @@
 import { HttpStatus } from '@nestjs/common'
 
+import { ApiTag } from 'src/api-documentation'
+import { IDocumentation } from 'src/api-documentation/decorators'
 import { UNAUTHORIZED_RESPONSE } from 'src/api-documentation/responses'
 
 import { AuthDto } from '../dto/auth.dto'
 import { Tokens } from '../dto/tokens.dto'
+import { SigninDto } from '../dto/signin.dto'
 import { AuthUserDto } from '../dto/auth-user.dto'
 
-export const SIGNUP_DOCUMENTATION = {
+export const SIGNUP_DOCUMENTATION: IDocumentation = {
   operation: { summary: 'Creating new user.' },
   body: {
     type: AuthDto,
   },
   responses: [{ status: HttpStatus.CREATED, type: AuthUserDto }, UNAUTHORIZED_RESPONSE],
+  tags: [ApiTag.public],
 }
 
-export const SIGNIN_DOCUMENTATION = {
+export const SIGNIN_DOCUMENTATION: IDocumentation = {
   operation: { summary: 'Getting user by credentials.' },
   body: {
-    type: AuthDto,
+    type: SigninDto,
   },
   responses: [{ status: HttpStatus.OK, type: AuthUserDto }, UNAUTHORIZED_RESPONSE],
+  tags: [ApiTag.public],
 }
 
 export const LOGOUT_DOCUMENTATION = {

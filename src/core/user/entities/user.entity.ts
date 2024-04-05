@@ -41,7 +41,9 @@ export class User extends Id {
   @Column({ nullable: true, select: false })
   refreshToken: string
 
-  @ManyToMany(() => Member, (member) => member.usersLikesIds)
-  @JoinTable()
+  @ManyToMany(() => Member, (member) => member.usersLikesIds, {
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   likesMembers: Member[]
 }

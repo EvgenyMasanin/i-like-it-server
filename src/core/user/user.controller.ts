@@ -62,7 +62,7 @@ export class UserController implements MemberCRUDController {
     return this.userService.findAll(queryPaginationDto)
   }
 
-  @Post('set-avatar')
+  @Patch('set-avatar')
   @FileSaver('avatars', 'avatar')
   @Documentation(SET_AVATAR_DOCUMENTATION)
   async setAvatar(@GetCurrentUserId() userId: number, @UploadedFile() avatar: Express.Multer.File) {

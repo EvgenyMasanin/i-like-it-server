@@ -41,18 +41,26 @@ export class Member extends Content {
   @ApiProperty({ type: () => User })
   author: User
 
-  @OneToMany(() => Characteristic, (characteristic) => characteristic.member, { eager: true })
+  @OneToMany(() => Characteristic, (characteristic) => characteristic.member, {
+    eager: true,
+    onDelete: 'CASCADE',
+  })
   @ApiProperty({ type: [Characteristic] })
   characteristics: Characteristic[]
 
   @OneToMany(() => MemberGallery, (memberGallery) => memberGallery.member, {
     eager: true,
+    onDelete: 'CASCADE',
   })
   @ApiProperty({ type: [MemberGallery] })
   gallery: MemberGallery[]
 
   @Transform(({ value }: { value: User[] }) => value.map(({ id }) => id))
-  @ManyToMany(() => User, (user) => user.likesMembers, { eager: true })
+  @ManyToMany(() => User, (user) => user.likesMembers, {
+    eager: true,
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   @JoinTable()
   @ApiProperty({ type: [Number], example: [14, 42] })
   usersLikesIds: User[]

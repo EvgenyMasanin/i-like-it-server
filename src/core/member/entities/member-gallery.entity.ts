@@ -17,6 +17,6 @@ export class MemberGallery extends Id {
   isMain: boolean
 
   @Exclude()
-  @ManyToOne(() => Member, (member) => member.characteristics)
+  @ManyToOne(() => Member, (member) => member.characteristics, { onDelete: 'CASCADE' })
   member: Member
 }

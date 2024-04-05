@@ -14,6 +14,7 @@ export class AccessTokenGuard extends AuthGuard(JwtStrategies.JWT) {
   canActivate(context: ExecutionContext) {
     const isPublic = this.reflector.getAllAndOverride(IS_PUBLIC, [
       context.getHandler(),
+
       context.getClass(),
     ])
 

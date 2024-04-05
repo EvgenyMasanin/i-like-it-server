@@ -1,12 +1,21 @@
+import { HttpStatus } from '@nestjs/common'
 import { ApiResponseOptions } from '@nestjs/swagger'
 
-import { IDocumentation } from '../decorators'
-import { FORBIDDEN_RESPONSE, NO_CONTENT_RESPONSE, UNAUTHORIZED_RESPONSE } from '../responses'
+import { Constructor } from 'src/common/interfaces'
 
-export const UPDATE_COMMON_DOCUMENTATION = (
+import { IDocumentation } from '../decorators'
+import { FORBIDDEN_RESPONSE, UNAUTHORIZED_RESPONSE } from '../responses'
+
+export const UPDATE_COMMON_DOCUMENTATION = <T extends Constructor>(
   entityName: string,
+  entity: T,
   ...responses: ApiResponseOptions[]
 ): IDocumentation => ({
   operation: { summary: `Updating ${entityName}.` },
-  responses: [NO_CONTENT_RESPONSE, UNAUTHORIZED_RESPONSE, FORBIDDEN_RESPONSE, ...responses],
+  responses: [
+    { status: HttpStatus.OK, type: entity },
+    UNAUTHORIZED_RESPONSE,
+    FORBIDDEN_RESPONSE,
+    ...responses,
+  ],
 })

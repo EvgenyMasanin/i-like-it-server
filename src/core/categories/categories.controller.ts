@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -81,8 +82,8 @@ export class CategoriesController implements CategoriesCRUDController {
   @Get(':id')
   @Public()
   @Documentation(FIND_ONE_DOCUMENTATION)
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id)
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriesService.findOne(id)
   }
 
   @Patch(':id')

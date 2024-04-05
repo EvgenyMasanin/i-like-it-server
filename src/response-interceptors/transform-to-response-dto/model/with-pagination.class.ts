@@ -13,5 +13,9 @@ export function WithPagination<Entity extends Constructor>(Entity: Entity) {
     pagination: Pagination
   }
 
+  Object.defineProperty(AbstractWithPagination, 'name', {
+    value: `WithPagination${Entity.name}}`,
+  })
+
   return AbstractWithPagination
 }
