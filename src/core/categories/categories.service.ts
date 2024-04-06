@@ -1,11 +1,10 @@
-import { FindOperator, ILike, Repository } from 'typeorm'
+import { ILike, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 
 import { CRUDService } from 'src/common/interfaces'
 import { UserService } from 'src/core/user/user.service'
 import { ExceptionService } from 'src/exception/exception.service'
-import { QueryPaginationDto } from 'src/common/dto/query-pagination.dto'
 import { Pagination } from 'src/response-interceptors/transform-to-response-dto/model'
 
 import { Category } from './entities/category.entity'
@@ -38,11 +37,6 @@ export class CategoriesService implements CategoriesCRUDService {
     return await this.categoryRepository.save(category)
   }
 
-  async findAll(queryPaginationDto: QueryPaginationDto) {
-    const res = await this.findAllByFilter(queryPaginationDto)
-    return res
-  }
-
   async findOne(id: number) {
     const category = await this.categoryRepository.findOneBy({ id })
 
@@ -73,17 +67,14 @@ export class CategoriesService implements CategoriesCRUDService {
     return this.categoryRepository.delete(id)
   }
 
-  async findAllByFilter(queryParameters: QueryCategoryDto) {
-    const { authorId, categoryId, name, limit = 10, offset = 0 } = queryParameters
-
-    const findParameters: { name?: FindOperator<string>; authorId?: number; categoryId?: number } =
-      {}
-    if (name) findParameters.name = ILike(`%${name}%`)
-    if (authorId) findParameters.authorId = authorId
-    if (categoryId) findParameters.categoryId = categoryId
+  async findAll(queryParameters: QueryCategoryDto) {
+    const { authorId, name, limit = 10, offset = 0 } = queryParameters
 
     const [data, total] = await this.categoryRepository.findAndCount({
-      where: findParameters,
+      where: {
+        name: name && ILike(`%${name}%`),
+        authorId,
+      },
       order: { id: 'ASC' },
       take: limit,
       skip: offset,

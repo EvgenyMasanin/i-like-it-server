@@ -17,14 +17,12 @@ import { ApiTags } from '@nestjs/swagger'
 import { CRUDController } from 'src/common/interfaces'
 import { GetCurrentUserId, Public } from 'src/auth/decorators'
 import { Documentation } from 'src/api-documentation/decorators'
-import { QueryPaginationDto } from 'src/common/dto/query-pagination.dto'
 import { FileSaver } from 'src/file/decorators/file-saver.decorator'
 import { WithPagination } from 'src/response-interceptors/transform-to-response-dto/model'
 import { ExcludeTransformToResponseDto } from 'src/response-interceptors/transform-to-response-dto'
 
 import {
   CREATE_DOCUMENTATION,
-  FIND_ALL_BY_FILTER_DOCUMENTATION,
   FIND_ALL_DOCUMENTATION,
   FIND_ONE_DOCUMENTATION,
   REMOVE_DOCUMENTATION,
@@ -65,18 +63,11 @@ export class CategoriesController implements CategoriesCRUDController {
     return this.categoriesService.create(createCategoryDto)
   }
 
-  @Get('filter')
-  @Public()
-  @Documentation(FIND_ALL_BY_FILTER_DOCUMENTATION)
-  findAllByFilter(@Query() filterDto: QueryCategoryDto): Promise<WithPagination<Category>> {
-    return this.categoriesService.findAllByFilter(filterDto)
-  }
-
   @Get()
   @Public()
   @Documentation(FIND_ALL_DOCUMENTATION)
-  findAll(@Query() queryPaginationDto: QueryPaginationDto) {
-    return this.categoriesService.findAll(queryPaginationDto)
+  findAll(@Query() filterDto: QueryCategoryDto): Promise<WithPagination<Category>> {
+    return this.categoriesService.findAll(filterDto)
   }
 
   @Get(':id')

@@ -18,9 +18,7 @@ export interface CRUDService<Entity, CreateEntityDto, UpdateEntityDto, QueryDto>
   ): Promise<Entity>
   remove(id: number, userId?: number, ...rest: unknown[]): Promise<DeleteResult>
 
-  findAll(queryPaginationDto: QueryPaginationDto): Promise<WithPagination<Entity>>
-
-  findAllByFilter(filterDto: QueryDto): Promise<WithPagination<Entity>>
+  findAll(filterDto: QueryDto): Promise<WithPagination<Entity>>
 
   findOne(id: number): Promise<Entity>
 }

@@ -17,11 +17,4 @@ export class QueryCategoryDto extends QueryPaginationDto {
   @IsInt()
   @IsPositive()
   authorId?: number
-
-  @ApiProperty({ required: false })
-  @Type(() => Number)
-  @IsOptional()
-  @IsInt()
-  @IsPositive()
-  categoryId?: number
 }

@@ -1,11 +1,10 @@
-import { FindOperator, ILike, Repository } from 'typeorm'
+import { ILike, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { ForbiddenException, Injectable } from '@nestjs/common'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 
 import { CRUDService } from 'src/common/interfaces'
 import { ExceptionService } from 'src/exception/exception.service'
-import { QueryPaginationDto } from 'src/common/dto/query-pagination.dto'
 import { Pagination } from 'src/response-interceptors/transform-to-response-dto/model'
 
 import { UserService } from '../user/user.service'
@@ -50,10 +49,8 @@ export class MemberService implements MemberCRUDService {
       description,
       usersLikesIds: [],
     })
-    console.log('🚀 ~ create ~ newMember:', newMember)
 
     const member = await this.memberRepository.save(newMember)
-    console.log('🚀 ~ create ~ member:', member)
 
     const characteristics = await this.characteristicService.createMany(member, characteristicsDto)
 
@@ -79,9 +76,9 @@ export class MemberService implements MemberCRUDService {
     return member
   }
 
-  findAll(queryPaginationDto: QueryPaginationDto) {
-    return this.findAllByFilter(queryPaginationDto)
-  }
+  // findAll(queryPaginationDto: QueryPaginationDto) {
+  //   return this.findAllByFilter(queryPaginationDto)
+  // }
 
   async findOne(id: number) {
     const member = await this.memberRepository.findOneBy({ id })
@@ -114,17 +111,15 @@ export class MemberService implements MemberCRUDService {
     return this.memberGalleryRepository.update({}, partialMember)
   }
 
-  async findAllByFilter(queryParameters: QueryMemberDto) {
+  async findAll(queryParameters: QueryMemberDto) {
     const { authorId, categoryId, name, limit = 10, offset = 0 } = queryParameters
 
-    const findParameters: { name?: FindOperator<string>; authorId?: number; categoryId?: number } =
-      {}
-    if (name) findParameters.name = ILike(`%${name}%`)
-    if (authorId) findParameters.authorId = authorId
-    if (categoryId) findParameters.categoryId = categoryId
-
     const [data, total] = await this.memberRepository.findAndCount({
-      where: findParameters,
+      where: {
+        name: name && ILike(`%${name}%`),
+        authorId,
+        categoryId,
+      },
       order: { id: 'ASC' },
       take: limit,
       skip: offset,

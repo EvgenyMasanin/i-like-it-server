@@ -15,7 +15,6 @@ import { ApiTags } from '@nestjs/swagger'
 
 import { GetCurrentUserId, Public } from 'src/auth/decorators'
 import { Documentation } from 'src/api-documentation/decorators'
-import { QueryPaginationDto } from 'src/common/dto/query-pagination.dto'
 import { FileSaver } from 'src/file/decorators/file-saver.decorator'
 import { CRUDController } from 'src/common/interfaces/CRUDController.interface'
 import { ExcludeTransformToResponseDto } from 'src/response-interceptors/transform-to-response-dto'
@@ -23,7 +22,6 @@ import { ExcludeTransformToResponseDto } from 'src/response-interceptors/transfo
 import { Member } from './entities'
 import {
   CREATE_MEMBER_DOCUMENTATION,
-  FIND_ALL_BY_FILTER_DOCUMENTATION,
   FIND_ALL_DOCUMENTATION,
   FIND_ONE_DOCUMENTATION,
   LIKE_DOCUMENTATION,
@@ -80,18 +78,11 @@ export class MemberController implements MemberCRUDController {
     return this.memberService.like(userId, +memberId)
   }
 
-  @Get('/filter')
-  @Public()
-  @Documentation(FIND_ALL_BY_FILTER_DOCUMENTATION)
-  findAllByFilter(@Query() filterDto: QueryMemberDto) {
-    return this.memberService.findAllByFilter(filterDto)
-  }
-
   @Get()
   @Public()
   @Documentation(FIND_ALL_DOCUMENTATION)
-  async findAll(@Query() queryPaginationDto: QueryPaginationDto) {
-    return this.memberService.findAll(queryPaginationDto)
+  findAll(@Query() filterDto: QueryMemberDto) {
+    return this.memberService.findAll(filterDto)
   }
 
   @Get(':id')

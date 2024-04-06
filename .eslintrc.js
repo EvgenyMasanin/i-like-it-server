@@ -20,5 +20,6 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-types': 'off',
     'prettier/prettier': 'off',
+    '@typescript-eslint/no-unused-vars': 'error',
   },
 }

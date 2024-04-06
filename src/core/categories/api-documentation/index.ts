@@ -8,7 +8,6 @@ import {
   NOT_EXISTING_ENTITY_RESPONSE,
 } from 'src/api-documentation'
 import {
-  FIND_ALL_COMMON_DOCUMENTATION,
   FIND_ONE_COMMON_DOCUMENTATION,
   REMOVE_COMMON_DOCUMENTATION,
   UPDATE_COMMON_DOCUMENTATION,
@@ -27,16 +26,11 @@ export const CREATE_DOCUMENTATION: IDocumentation = {
   responses: [{ status: HttpStatus.OK, type: CategoryDto }, NOT_EXISTING_CATEGORY_RESPONSE],
 }
 
-export const FIND_ALL_BY_FILTER_DOCUMENTATION: IDocumentation = {
+export const FIND_ALL_DOCUMENTATION: IDocumentation = {
   operation: { summary: 'Finding all categories by filter with pagination.' },
   responses: [{ status: HttpStatus.OK, type: WithPagination(CategoryDto) }],
   tags: [ApiTag.public],
 }
-
-export const FIND_ALL_DOCUMENTATION: IDocumentation = FIND_ALL_COMMON_DOCUMENTATION(
-  WithPagination(CategoryDto),
-  'categories'
-)
 
 export const FIND_ONE_DOCUMENTATION: IDocumentation = FIND_ONE_COMMON_DOCUMENTATION(
   CategoryDto,

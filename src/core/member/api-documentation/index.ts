@@ -7,7 +7,6 @@ import {
   UNAUTHORIZED_RESPONSE,
 } from 'src/api-documentation'
 import {
-  FIND_ALL_COMMON_DOCUMENTATION,
   FIND_ONE_COMMON_DOCUMENTATION,
   REMOVE_COMMON_DOCUMENTATION,
   UPDATE_COMMON_DOCUMENTATION,
@@ -61,12 +60,7 @@ export const LIKE_DOCUMENTATION: IDocumentation = {
   ],
 }
 
-export const FIND_ALL_DOCUMENTATION: IDocumentation = FIND_ALL_COMMON_DOCUMENTATION(
-  WithPagination(MemberDto),
-  'member'
-)
-
-export const FIND_ALL_BY_FILTER_DOCUMENTATION: IDocumentation = {
+export const FIND_ALL_DOCUMENTATION: IDocumentation = {
   operation: { summary: 'Finding all members by filter.' },
   responses: [{ status: HttpStatus.OK, type: WithPagination(MemberDto) }],
   tags: [ApiTag.public],
