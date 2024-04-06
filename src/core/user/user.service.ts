@@ -8,7 +8,6 @@ import { HashService } from 'src/hash/hash.service'
 import { RoleService } from 'src/core/role/role.service'
 import { Role } from 'src/core/role/entities/role.entity'
 import { ExceptionService } from 'src/exception/exception.service'
-import { QueryPaginationDto } from 'src/common/dto/query-pagination.dto'
 import { Pagination } from 'src/response-interceptors/transform-to-response-dto/model'
 
 import { User } from './entities/user.entity'
@@ -40,11 +39,7 @@ export class UserService implements CategoriesCRUDService {
     return await this.userRepository.save(newUser)
   }
 
-  async findAll(queryPaginationDto: QueryPaginationDto) {
-    return this.findAllByFilter(queryPaginationDto)
-  }
-
-  async findAllByFilter(queryPaginationDto: QueryUserDto) {
+  async findAll(queryPaginationDto: QueryUserDto) {
     const { username, limit = 10, offset = 0 } = queryPaginationDto
 
     const findParameters: { username?: FindOperator<string>; roles?: FindOperator<Role> } = {}

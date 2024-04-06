@@ -7,7 +7,6 @@ import {
   HttpStatus,
   Param,
   Patch,
-  Post,
   Query,
   UploadedFile,
 } from '@nestjs/common'
@@ -15,12 +14,10 @@ import { ApiTags } from '@nestjs/swagger'
 
 import { CRUDController } from 'src/common/interfaces'
 import { GetCurrentUserId, Public } from 'src/auth/decorators'
-import { Documentation } from 'src/api-documentation/decorators'
-import { QueryPaginationDto } from 'src/common/dto/query-pagination.dto'
+import { ApiDocumentation } from 'src/api-documentation/decorators'
 import { FileSaver } from 'src/file/decorators/file-saver.decorator'
 
 import {
-  FIND_ALL_BY_FILTER_DOCUMENTATION,
   FIND_ALL_DOCUMENTATION,
   FIND_ONE_DOCUMENTATION,
   REMOVE_DOCUMENTATION,
@@ -39,6 +36,7 @@ type MemberCRUDController = CRUDController<User, CreateUserDto, UpdateUserDto, Q
 @ApiTags('Users')
 export class UserController implements MemberCRUDController {
   constructor(private readonly userService: UserService) {}
+
   create(userId: number, createEntityDto: CreateUserDto, ...rest: unknown[]): Promise<User> {
     console.log(
       '🚀 ~ create ~ userId: number, createEntityDto: CreateUserDto, ...rest: unknown[]:',
@@ -49,22 +47,15 @@ export class UserController implements MemberCRUDController {
     throw new Error('Method not implemented.')
   }
 
-  @Get('/filter')
-  @Documentation(FIND_ALL_BY_FILTER_DOCUMENTATION)
-  findAllByFilter(@Query() filterDto: QueryUserDto) {
-    return this.userService.findAllByFilter(filterDto)
-  }
-
   @Get()
-  @Public()
-  @Documentation(FIND_ALL_DOCUMENTATION)
-  findAll(@Query() queryPaginationDto: QueryPaginationDto) {
-    return this.userService.findAll(queryPaginationDto)
+  @ApiDocumentation(FIND_ALL_DOCUMENTATION)
+  findAll(@Query() filterDto: QueryUserDto) {
+    return this.userService.findAll(filterDto)
   }
 
   @Patch('set-avatar')
   @FileSaver('avatars', 'avatar')
-  @Documentation(SET_AVATAR_DOCUMENTATION)
+  @ApiDocumentation(SET_AVATAR_DOCUMENTATION)
   async setAvatar(@GetCurrentUserId() userId: number, @UploadedFile() avatar: Express.Multer.File) {
     const avatarURL = avatar.filename
 
@@ -73,20 +64,20 @@ export class UserController implements MemberCRUDController {
 
   @Get(':id')
   @Public()
-  @Documentation(FIND_ONE_DOCUMENTATION)
+  @ApiDocumentation(FIND_ONE_DOCUMENTATION)
   findOne(@Param('id') id: string) {
     return this.userService.findOne(+id)
   }
 
   @Patch(':id')
-  @Documentation(UPDATE_DOCUMENTATION)
+  @ApiDocumentation(UPDATE_DOCUMENTATION)
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto)
   }
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Documentation(REMOVE_DOCUMENTATION)
+  @ApiDocumentation(REMOVE_DOCUMENTATION)
   remove(@Param('id') id: string) {
     return this.userService.remove(+id)
   }

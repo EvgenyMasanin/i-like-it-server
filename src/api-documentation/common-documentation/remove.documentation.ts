@@ -1,12 +1,26 @@
+import { HttpStatus } from '@nestjs/common'
 import { ApiResponseOptions } from '@nestjs/swagger'
 
-import { IDocumentation } from '../decorators'
-import { FORBIDDEN_RESPONSE, NO_CONTENT_RESPONSE, UNAUTHORIZED_RESPONSE } from '../responses'
+import { IApiDocumentation } from '../decorators'
+import { NOT_FOUND_RESPONSE } from '../responses/not-found'
+import { FORBIDDEN_RESPONSE, UNAUTHORIZED_RESPONSE } from '../responses'
 
-export const REMOVE_COMMON_DOCUMENTATION = (
-  entityName: string,
-  ...responses: ApiResponseOptions[]
-): IDocumentation => ({
+interface IRemoveCommonDocumentation {
+  entityName: string
+  responses?: ApiResponseOptions[]
+}
+
+export const REMOVE_COMMON_DOCUMENTATION = ({
+  entityName,
+  responses = [],
+}: IRemoveCommonDocumentation): IApiDocumentation => ({
   operation: { summary: `Deleting ${entityName}.` },
-  responses: [NO_CONTENT_RESPONSE, UNAUTHORIZED_RESPONSE, FORBIDDEN_RESPONSE, ...responses],
+  responses: [
+    { status: HttpStatus.OK, type: Boolean },
+    FORBIDDEN_RESPONSE,
+    UNAUTHORIZED_RESPONSE,
+    NOT_FOUND_RESPONSE(entityName),
+    ...responses,
+  ],
+  isBearerAuth: true,
 })

@@ -14,7 +14,7 @@ import {
 import { ApiTags } from '@nestjs/swagger'
 
 import { GetCurrentUserId, Public } from 'src/auth/decorators'
-import { Documentation } from 'src/api-documentation/decorators'
+import { ApiDocumentation } from 'src/api-documentation/decorators'
 import { FileSaver } from 'src/file/decorators/file-saver.decorator'
 import { CRUDController } from 'src/common/interfaces/CRUDController.interface'
 import { ExcludeTransformToResponseDto } from 'src/response-interceptors/transform-to-response-dto'
@@ -45,7 +45,7 @@ export class MemberController implements MemberCRUDController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @Documentation(CREATE_MEMBER_DOCUMENTATION)
+  @ApiDocumentation(CREATE_MEMBER_DOCUMENTATION)
   async create(@GetCurrentUserId() userId: number, @Body() createMemberDto: CreateMemberDto) {
     createMemberDto.authorId = userId
 
@@ -55,7 +55,7 @@ export class MemberController implements MemberCRUDController {
   @Post('/gallery/:memberId')
   @HttpCode(HttpStatus.CREATED)
   @FileSaver('member-gallery')
-  @Documentation(UPLOAD_GALLERY_DOCUMENTATION)
+  @ApiDocumentation(UPLOAD_GALLERY_DOCUMENTATION)
   async uploadGallery(
     @UploadedFiles() memberGallery: Express.Multer.File[],
     @Param('memberId') id: string,
@@ -72,7 +72,7 @@ export class MemberController implements MemberCRUDController {
   }
 
   @Patch('like/:id')
-  @Documentation(LIKE_DOCUMENTATION)
+  @ApiDocumentation(LIKE_DOCUMENTATION)
   like(@GetCurrentUserId() userId: number, @Param('id') memberId: string) {
     console.log()
     return this.memberService.like(userId, +memberId)
@@ -80,21 +80,21 @@ export class MemberController implements MemberCRUDController {
 
   @Get()
   @Public()
-  @Documentation(FIND_ALL_DOCUMENTATION)
+  @ApiDocumentation(FIND_ALL_DOCUMENTATION)
   findAll(@Query() filterDto: QueryMemberDto) {
     return this.memberService.findAll(filterDto)
   }
 
   @Get(':id')
   @Public()
-  @Documentation(FIND_ONE_DOCUMENTATION)
+  @ApiDocumentation(FIND_ONE_DOCUMENTATION)
   async findOne(@Param('id') id: string) {
     return this.memberService.findOne(+id)
   }
 
   @Patch(':id')
   // @ExcludeTransformToResponseDto()
-  @Documentation(UPDATE_DOCUMENTATION)
+  @ApiDocumentation(UPDATE_DOCUMENTATION)
   update(
     @Param('id') id: string,
     @Body() updateMemberDto: UpdateMemberDto,
@@ -106,7 +106,7 @@ export class MemberController implements MemberCRUDController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @ExcludeTransformToResponseDto()
-  @Documentation(REMOVE_DOCUMENTATION)
+  @ApiDocumentation(REMOVE_DOCUMENTATION)
   remove(@Param('id') id: string, @GetCurrentUserId() userId: number) {
     return this.memberService.remove(+id, userId)
   }

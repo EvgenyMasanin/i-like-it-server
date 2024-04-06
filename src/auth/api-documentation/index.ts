@@ -1,7 +1,7 @@
 import { HttpStatus } from '@nestjs/common'
 
 import { ApiTag } from 'src/api-documentation'
-import { IDocumentation } from 'src/api-documentation/decorators'
+import { IApiDocumentation } from 'src/api-documentation/decorators'
 import { UNAUTHORIZED_RESPONSE } from 'src/api-documentation/responses'
 
 import { AuthDto } from '../dto/auth.dto'
@@ -9,7 +9,7 @@ import { Tokens } from '../dto/tokens.dto'
 import { SigninDto } from '../dto/signin.dto'
 import { AuthUserDto } from '../dto/auth-user.dto'
 
-export const SIGNUP_DOCUMENTATION: IDocumentation = {
+export const SIGNUP_DOCUMENTATION: IApiDocumentation = {
   operation: { summary: 'Creating new user.' },
   body: {
     type: AuthDto,
@@ -18,7 +18,7 @@ export const SIGNUP_DOCUMENTATION: IDocumentation = {
   tags: [ApiTag.public],
 }
 
-export const SIGNIN_DOCUMENTATION: IDocumentation = {
+export const SIGNIN_DOCUMENTATION: IApiDocumentation = {
   operation: { summary: 'Getting user by credentials.' },
   body: {
     type: SigninDto,

@@ -1,6 +1,10 @@
 import { HttpStatus } from '@nestjs/common'
+import { ApiResponseOptions } from '@nestjs/swagger'
 
-export const FORBIDDEN_RESPONSE = {
+import { forbiddenRequestSchema } from '../schemas'
+
+export const FORBIDDEN_RESPONSE: ApiResponseOptions = {
   status: HttpStatus.FORBIDDEN,
-  description: 'You does not have permission for this action!',
+  description: 'Forbidden',
+  schema: forbiddenRequestSchema({ type: 'string', example: 'Access denied!' }),
 } as const

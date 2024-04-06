@@ -1,4 +1,5 @@
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiBodyOptions,
   ApiConsumes,
@@ -14,23 +15,25 @@ import { applyDecorators } from '@nestjs/common'
 
 import { ApiTag } from 'src/api-documentation/tags/api-tag.enum'
 
-export interface IDocumentation {
+export interface IApiDocumentation {
   operation?: ApiOperationOptions
   body?: ApiBodyOptions
   responses?: ApiResponseOptions[]
   headers?: ApiHeaderOptions[]
   consumes?: string | string[]
   tags?: ApiTag[]
+  isBearerAuth?: boolean
 }
 
-export const Documentation = ({
+export const ApiDocumentation = ({
   body,
   operation,
   responses,
   headers,
   consumes,
   tags = [ApiTag.auth],
-}: IDocumentation) => {
+  isBearerAuth,
+}: IApiDocumentation) => {
   const decorators = []
 
   if (body) {
@@ -51,6 +54,9 @@ export const Documentation = ({
   }
   if (tags) {
     tags.forEach((tag) => decorators.push(ApiTags(tag)))
+  }
+  if (isBearerAuth) {
+    decorators.push(ApiBearerAuth())
   }
 
   return applyDecorators(...decorators)

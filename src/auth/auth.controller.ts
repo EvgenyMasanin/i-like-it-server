@@ -1,7 +1,7 @@
 import { ApiTags } from '@nestjs/swagger'
 import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common'
 
-import { Documentation } from 'src/api-documentation/decorators'
+import { ApiDocumentation } from 'src/api-documentation/decorators'
 
 import {
   LOGOUT_DOCUMENTATION,
@@ -26,7 +26,7 @@ export class AuthController {
   @Post('signup')
   @Public()
   @HttpCode(HttpStatus.CREATED)
-  @Documentation(SIGNUP_DOCUMENTATION)
+  @ApiDocumentation(SIGNUP_DOCUMENTATION)
   signup(@Body() dto: AuthDto): Promise<AuthUserDto> {
     return this.authService.signup(dto)
   }
@@ -34,14 +34,14 @@ export class AuthController {
   @Post('signin')
   @Public()
   @HttpCode(HttpStatus.OK)
-  @Documentation(SIGNIN_DOCUMENTATION)
+  @ApiDocumentation(SIGNIN_DOCUMENTATION)
   async signin(@Body() dto: SigninDto): Promise<AuthUserDto> {
     return await this.authService.signin(dto)
   }
 
   @Post('logout')
   @HttpCode(HttpStatus.RESET_CONTENT)
-  @Documentation(LOGOUT_DOCUMENTATION)
+  @ApiDocumentation(LOGOUT_DOCUMENTATION)
   async logout(@GetCurrentUserId() userId: number) {
     return await this.authService.logout(userId)
   }
@@ -50,7 +50,7 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @UseGuards(RefreshTokenGuard)
-  @Documentation(REFRESH_DOCUMENTATION)
+  @ApiDocumentation(REFRESH_DOCUMENTATION)
   async refreshTokens(
     @GetCurrentUserId() userId: number,
     @GetRefreshToken() refreshToken: string
@@ -60,7 +60,7 @@ export class AuthController {
 
   @Get('me')
   @HttpCode(HttpStatus.OK)
-  @Documentation(ME_DOCUMENTATION)
+  @ApiDocumentation(ME_DOCUMENTATION)
   async getMe(@GetCurrentUserId() userId: number): Promise<AuthUserDto> {
     return await this.authService.getMe(userId)
   }

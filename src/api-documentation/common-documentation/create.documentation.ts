@@ -4,31 +4,29 @@ import { ApiResponseOptions } from '@nestjs/swagger'
 import { Constructor } from 'src/common/interfaces'
 
 import { IApiDocumentation } from '../decorators'
-import { NOT_FOUND_RESPONSE } from '../responses/not-found'
-import { FORBIDDEN_RESPONSE, UNAUTHORIZED_RESPONSE } from '../responses'
+import { INVALID_DTO_RESPONSE, UNAUTHORIZED_RESPONSE } from '../responses'
 
-interface IUpdateCommonDocumentation {
+interface ICreateCommonDocumentation {
   entity: Constructor
   entityName: string
   responses?: ApiResponseOptions[]
 }
 
-export const UPDATE_COMMON_DOCUMENTATION = ({
+export const CREATE_COMMON_DOCUMENTATION = ({
   entity,
   entityName,
   responses = [],
-}: IUpdateCommonDocumentation): IApiDocumentation => ({
-  operation: { summary: `Updating ${entityName}.` },
+}: ICreateCommonDocumentation): IApiDocumentation => ({
+  operation: { summary: `Creating new ${entityName}.` },
   responses: [
     {
-      status: HttpStatus.OK,
+      status: HttpStatus.CREATED,
       type: entity,
+      description: `New ${entityName} has been created successfully.`,
     },
-    NOT_FOUND_RESPONSE(entityName),
-    FORBIDDEN_RESPONSE,
+    INVALID_DTO_RESPONSE,
     UNAUTHORIZED_RESPONSE,
     ...responses,
   ],
-
   isBearerAuth: true,
 })

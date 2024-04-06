@@ -6,7 +6,7 @@ import { Pagination } from './pagination.class'
 import { WithPagination } from './with-pagination.interface'
 
 export function WithPagination<Entity extends Constructor>(Entity: Entity) {
-  abstract class AbstractWithPagination implements WithPagination<Entity> {
+  class AbstractWithPagination implements WithPagination<Entity> {
     @ApiProperty({ type: [Entity] })
     data: Entity[]
     @ApiProperty()
